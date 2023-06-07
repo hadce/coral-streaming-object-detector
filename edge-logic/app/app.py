@@ -1,4 +1,6 @@
-import argparse, asyncio, json, os, cv2, platform, sys
+import sys
+sys.path.append('/home/ken/Workspace/projects/coral-streaming-object-detector/edge-logic/app/.myenv/lib/python3.10/site-packages')
+import argparse, asyncio, json, os, cv2, platform
 
 from time import sleep
 from aiohttp import web
@@ -12,8 +14,8 @@ from peerconnection import PeerConnectionFactory
 from rtcvideo import RTCVideoStream
 import server
 
-from edgetpu.detection.engine import DetectionEngine
-from edgetpu.utils import dataset_utils
+# from edgetpu.detection.engine import DetectionEngine
+# from edgetpu.utils import dataset_utils
 from PIL import Image
 
 import logging
@@ -55,7 +57,7 @@ async def mjpeg_handler(request):
     await response.prepare(request)
     while True:
         data = await player.get_jpeg_frame()
-        await asyncio.sleep(0.2) # this means that the maximum FPS is 5
+        await asyncio.sleep(0.03) # this means that the maximum FPS is 5
         await response.write(
             '--{}\r\n'.format(boundary).encode('utf-8'))
         await response.write(b'Content-Type: image/jpeg\r\n')
@@ -119,12 +121,12 @@ def main():
 pcs = set()
 
 # open media source
-if "CAMERA" in os.environ:
-    checkDeviceReadiness()
-    #Load Camera based on environment variable, default to /dev/video0
-    player = CameraDevice(int(os.getenv('CAMERA', 0)))
-else:
-    player = CameraDevice("/usr/src/video/construction.mp4")
+# if "CAMERA" in os.environ:
+#     checkDeviceReadiness()
+#     #Load Camera based on environment variable, default to /dev/video0
+#     player = CameraDevice(int(os.getenv('CAMERA', 0)))
+# else:
+player = CameraDevice("../video/construction.mp4")
 
 # Factory to create peerConnections depending on the iceServers set by user
 pc_factory = PeerConnectionFactory()

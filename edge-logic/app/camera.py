@@ -20,6 +20,7 @@ class CameraDevice():
             img = detect.objects(frame)
             await asyncio.sleep(0)
             return img
+            # return frame
         except:
             print('Video stream ended. Exiting...')
             sys.exit()
